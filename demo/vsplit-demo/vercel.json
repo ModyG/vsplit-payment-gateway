@@ -1,0 +1,14 @@
+{
+  "name": "vsplit-demo",
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_COMPANY_NAME": "VSplit Payment Gateway",
+    "NEXT_PUBLIC_DEMO_MODE": "true"
+  }
+}

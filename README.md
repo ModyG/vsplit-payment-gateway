@@ -15,6 +15,33 @@ A comprehensive B2B payment gateway integration package for Stripe with advanced
 - 🪝 **Webhooks**: Event-driven architecture for notifications
 - 📱 **TypeScript**: Fully typed for better development experience
 
+## 🚀 Live Demo
+
+Experience VSplit in action with our interactive demo application:
+
+**[→ Try Live Demo](https://your-vsplit-demo.vercel.app)** _(Deploy the demo to get this URL)_
+
+### Local Demo Setup
+
+1. **Clone & Setup:**
+
+   ```bash
+   git clone https://github.com/ModyG/vsplit-payment-gateway.git
+   cd vsplit-payment-gateway
+   npm run demo
+   ```
+
+2. **Add your Stripe keys** to `demo/vsplit-demo/.env.local`
+
+3. **Visit:** `http://localhost:3000`
+
+### Demo Scenarios
+
+- **Basic Split Payment** - Simple 2-way split between merchant and platform
+- **Restaurant Delivery** - 3-way split: Restaurant, Driver, Platform
+- **Marketplace** - Multi-vendor marketplace with different commission rates
+- **More coming soon** - Freelance, Events, Custom integrations
+
 ## Installation
 
 ```bash

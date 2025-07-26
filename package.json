@@ -35,7 +35,9 @@
     "release:major": "npm run pre-release && npm version major && npm run post-release",
     "pre-release": "npm run lint && npm run test",
     "post-release": "git push && git push --tags && npm publish",
-    "verify-release": "cd test-installation && npm install @vegaci_shared/vsplit-payment-gateway@latest && npm run test"
+    "verify-release": "cd test-installation && npm install @vegaci_shared/vsplit-payment-gateway@latest && npm run test",
+    "demo": "cd demo/vsplit-demo && npm run dev",
+    "demo:build": "cd demo/vsplit-demo && npm run build"
   },
   "keywords": [
     "stripe",
