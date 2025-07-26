@@ -175,10 +175,11 @@ describe('VSplitPaymentGateway', () => {
       });
 
       const result = await gateway.initializeSplitPayment({
-        splits: [
-          { amount: 2000, label: 'Card 1' },
-          { amount: 3000, label: 'Card 2' },
-        ],
+        totalAmount: 5000,
+        numberOfCards: 2,
+        cardAmounts: [2000, 3000],
+        currency: 'usd',
+        orderId: 'test-order-123',
         timeout: 300,
       });
 
@@ -204,7 +205,11 @@ describe('VSplitPaymentGateway', () => {
 
       await expect(
         gateway.initializeSplitPayment({
-          splits: [{ amount: 0 }],
+          totalAmount: 1000,
+          numberOfCards: 1,
+          cardAmounts: [0],
+          currency: 'usd',
+          orderId: 'test-order',
         })
       ).rejects.toThrow('Invalid splits configuration');
     });

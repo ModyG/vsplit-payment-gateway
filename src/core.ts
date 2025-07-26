@@ -12,7 +12,6 @@ import {
   RefundResponse,
   PaymentVerificationRequest,
   PaymentVerificationResponse,
-  EnhancedPaymentSessionConfig,
 } from './types';
 import { ApiClient } from './utils/api-client';
 import { EventEmitter } from './utils/event-emitter';
@@ -473,7 +472,11 @@ export class VSplitPaymentGateway {
       // If merchant splits are provided, process them after successful payment
       if (config.merchantSplits && config.merchantSplits.length > 0) {
         // Store the merchant splits for processing after payment confirmation
-        (paymentResult.data as any).merchantSplits = config.merchantSplits;
+        (
+          paymentResult.data as PaymentResult['data'] & {
+            merchantSplits?: typeof config.merchantSplits;
+          }
+        ).merchantSplits = config.merchantSplits;
       }
 
       return paymentResult;
@@ -499,7 +502,16 @@ export class VSplitPaymentGateway {
       label: string;
       recipient: string;
     }>
-  ): Promise<{ success: boolean; splits: any[]; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    splits: Array<{
+      amount: number;
+      label: string;
+      recipient: string;
+      id?: string;
+    }>;
+    error?: string;
+  }> {
     try {
       const response = await this.apiClient.post(
         '/payment/merchant-splits/process',
@@ -515,7 +527,17 @@ export class VSplitPaymentGateway {
 
       return {
         success: true,
-        splits: response.data.splits || [],
+        splits:
+          (
+            response.data as {
+              splits?: Array<{
+                amount: number;
+                label: string;
+                recipient: string;
+                id?: string;
+              }>;
+            }
+          )?.splits || [],
       };
     } catch (error) {
       return {

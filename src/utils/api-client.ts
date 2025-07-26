@@ -18,16 +18,18 @@ export class ApiClient {
   /**
    * Make a GET request
    */
-  public async get<T = any>(endpoint: string): Promise<ApiResponse<T>> {
+  public async get<T = Record<string, unknown>>(
+    endpoint: string
+  ): Promise<ApiResponse<T>> {
     return this.request<T>('GET', endpoint);
   }
 
   /**
    * Make a POST request
    */
-  public async post<T = any>(
+  public async post<T = Record<string, unknown>>(
     endpoint: string,
-    data?: any
+    data?: Record<string, unknown>
   ): Promise<ApiResponse<T>> {
     return this.request<T>('POST', endpoint, data);
   }
@@ -35,9 +37,9 @@ export class ApiClient {
   /**
    * Make a PUT request
    */
-  public async put<T = any>(
+  public async put<T = Record<string, unknown>>(
     endpoint: string,
-    data?: any
+    data?: Record<string, unknown>
   ): Promise<ApiResponse<T>> {
     return this.request<T>('PUT', endpoint, data);
   }
@@ -45,7 +47,9 @@ export class ApiClient {
   /**
    * Make a DELETE request
    */
-  public async delete<T = any>(endpoint: string): Promise<ApiResponse<T>> {
+  public async delete<T = Record<string, unknown>>(
+    endpoint: string
+  ): Promise<ApiResponse<T>> {
     return this.request<T>('DELETE', endpoint);
   }
 
@@ -55,7 +59,7 @@ export class ApiClient {
   private async request<T>(
     method: string,
     endpoint: string,
-    data?: any
+    data?: Record<string, unknown>
   ): Promise<ApiResponse<T>> {
     try {
       const url = `${this.config.apiEndpoint}${endpoint}`;

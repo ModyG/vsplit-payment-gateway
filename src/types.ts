@@ -154,7 +154,7 @@ export type PaymentStatus =
 /**
  * Payment intent response
  */
-export interface PaymentIntent {
+export interface PaymentIntent extends Record<string, unknown> {
   /** Payment intent ID */
   id: string;
   /** Client secret for frontend */
@@ -229,7 +229,7 @@ export interface PaymentResult {
   /** Error message if failed */
   error?: string;
   /** Additional data */
-  data?: any;
+  data?: PaymentIntent | Record<string, unknown>;
 }
 
 /**
@@ -268,12 +268,15 @@ export interface WebhookEvent {
 /**
  * Event callback function type
  */
-export type EventCallback<T = any> = (event: T) => void | Promise<void>;
+export type EventCallback<T = Record<string, unknown>> = (event: T) => void;
 
 /**
  * Payment gateway events
  */
-export interface PaymentGatewayEvents {
+export type PaymentGatewayEvents = Record<
+  string,
+  (...args: unknown[]) => void
+> & {
   /** Payment succeeded */
   'payment:success': EventCallback<PaymentResult>;
   /** Payment failed */
@@ -290,7 +293,7 @@ export interface PaymentGatewayEvents {
   'payment:canceled': EventCallback<PaymentResult>;
   /** Error occurred */
   error: EventCallback<Error>;
-}
+};
 
 /**
  * React hook options
@@ -311,7 +314,10 @@ export interface UseVSplitReturn {
   /** Initialize payment session */
   initializePayment: (config: PaymentSessionConfig) => Promise<PaymentResult>;
   /** Process single payment */
-  processPayment: (paymentMethod: any) => Promise<PaymentResult>;
+  processPayment: (paymentMethod: {
+    id: string;
+    type: string;
+  }) => Promise<PaymentResult>;
   /** Initialize split payment */
   initializeSplitPayment: (
     config: SplitPaymentConfig
@@ -319,7 +325,7 @@ export interface UseVSplitReturn {
   /** Process split payment step */
   processSplitPayment: (
     splitIndex: number,
-    paymentMethod: any
+    paymentMethod: { id: string; type: string }
   ) => Promise<PaymentResult>;
   /** Cancel payment */
   cancelPayment: () => Promise<void>;
@@ -340,7 +346,7 @@ export interface UseVSplitReturn {
 /**
  * API response wrapper
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
   /** Success flag */
   success: boolean;
   /** Response data */
@@ -350,13 +356,13 @@ export interface ApiResponse<T = any> {
   /** Error code */
   code?: string;
   /** Additional metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
  * Refund request
  */
-export interface RefundRequest {
+export interface RefundRequest extends Record<string, unknown> {
   /** Payment intent ID to refund */
   paymentIntentId: string;
   /** Amount to refund (optional, defaults to full amount) */
@@ -388,7 +394,7 @@ export interface RefundResponse {
 /**
  * Payment verification request
  */
-export interface PaymentVerificationRequest {
+export interface PaymentVerificationRequest extends Record<string, unknown> {
   /** Payment intent ID */
   paymentIntentId: string;
   /** Expected amount */
@@ -410,7 +416,7 @@ export interface PaymentVerificationResponse {
   /** Currency */
   currency: string;
   /** Additional details */
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 // ========================================

@@ -1,6 +1,7 @@
 /**
  * Validation utilities
  */
+import { PaymentSessionConfig } from '../types';
 
 /**
  * Validate email format
@@ -114,7 +115,7 @@ export function validateSplitPayments(
 /**
  * Validate payment configuration
  */
-export function validatePaymentConfig(config: any): {
+export function validatePaymentConfig(config: PaymentSessionConfig): {
   valid: boolean;
   errors: string[];
 } {

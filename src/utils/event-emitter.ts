@@ -1,7 +1,9 @@
 /**
  * Generic event emitter for payment gateway events
  */
-export class EventEmitter<T extends Record<string, any>> {
+export class EventEmitter<
+  T extends Record<string, (...args: unknown[]) => void>
+> {
   private listeners: Map<keyof T, Array<T[keyof T]>> = new Map();
 
   /**
@@ -11,6 +13,7 @@ export class EventEmitter<T extends Record<string, any>> {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.listeners.get(event)!.push(callback);
   }
 
