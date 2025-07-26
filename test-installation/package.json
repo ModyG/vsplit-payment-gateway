@@ -1,0 +1,30 @@
+{
+  "name": "test-installation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node run-tests.ts",
+    "test:basic": "ts-node test-basic.ts",
+    "test:typescript": "ts-node test-typescript.ts",
+    "test:react": "ts-node test-react.ts",
+    "test:css": "ts-node test-css.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@vegaci_shared/vsplit-payment-gateway": "^1.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

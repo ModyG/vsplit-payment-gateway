@@ -44,13 +44,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ModyG/vsplit.git",
-    "directory": "vSplit"
+    "url": "git+https://github.com/ModyG/vsplit-payment-gateway.git"
   },
   "bugs": {
-    "url": "https://github.com/ModyG/vsplit/issues"
+    "url": "https://github.com/ModyG/vsplit-payment-gateway/issues"
   },
-  "homepage": "https://github.com/ModyG/vsplit#readme",
+  "homepage": "https://github.com/ModyG/vsplit-payment-gateway#readme",
   "dependencies": {
     "@stripe/stripe-js": "^4.0.0",
     "stripe": "^15.0.0"

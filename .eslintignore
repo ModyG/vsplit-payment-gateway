@@ -1,0 +1,15 @@
+# Ignore test installation directory
+test-installation/
+
+# Ignore build output
+dist/
+build/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore package files
+*.tgz
+
+# Ignore coverage reports
+coverage/
