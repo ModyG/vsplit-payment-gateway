@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* VSplit Payment Gateway Styles */
+
+.vsplit-container {
+  @apply max-w-md mx-auto p-6 bg-white rounded-lg shadow-md;
+}
+
+.vsplit-form {
+  @apply space-y-4;
+}
+
+.vsplit-button {
+  @apply w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.vsplit-button:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+}
+
+.vsplit-error {
+  @apply text-red-600 text-sm mt-2 p-3 bg-red-50 border border-red-200 rounded-md;
+}
+
+.vsplit-success {
+  @apply text-green-600 text-sm mt-2 p-3 bg-green-50 border border-green-200 rounded-md;
+}
+
+.vsplit-loading {
+  @apply flex items-center justify-center p-4;
+}
+
+.vsplit-spinner {
+  @apply animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full;
+}
+
+/* Split Payment Styles */
+
+.vsplit-split-container {
+  @apply space-y-6;
+}
+
+.vsplit-progress-bar {
+  @apply flex space-x-2 mb-6;
+}
+
+.vsplit-progress-step {
+  @apply flex-1 h-2 rounded-full transition-colors duration-300;
+}
+
+.vsplit-progress-step.completed {
+  @apply bg-green-500;
+}
+
+.vsplit-progress-step.active {
+  @apply bg-blue-500;
+}
+
+.vsplit-progress-step.pending {
+  @apply bg-gray-200;
+}
+
+.vsplit-split-step {
+  @apply p-6 border border-gray-200 rounded-lg transition-all duration-300;
+}
+
+.vsplit-split-step.active {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.vsplit-split-step.completed {
+  @apply border-green-500 bg-green-50;
+}
+
+.vsplit-split-step.disabled {
+  @apply opacity-50;
+}
+
+.vsplit-step-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.vsplit-step-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.vsplit-step-amount {
+  @apply text-xl font-bold text-blue-600;
+}
+
+.vsplit-step-status {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.vsplit-step-status.completed {
+  @apply bg-green-100 text-green-800;
+}
+
+.vsplit-step-status.active {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.vsplit-step-status.pending {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Payment Elements Styling */
+
+.vsplit-payment-element {
+  @apply border border-gray-300 rounded-md p-4 mb-4;
+}
+
+.vsplit-payment-element:focus-within {
+  @apply border-blue-500 ring-1 ring-blue-500;
+}
+
+/* Timer Styles */
+
+.vsplit-timer {
+  @apply text-center mb-4;
+}
+
+.vsplit-timer-display {
+  @apply text-2xl font-mono font-bold text-yellow-600;
+}
+
+.vsplit-timer-label {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.vsplit-timer.critical {
+  @apply text-red-600;
+}
+
+/* Card Styles */
+
+.vsplit-card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+.vsplit-card-header {
+  @apply px-6 py-4 bg-gray-50 border-b border-gray-200;
+}
+
+.vsplit-card-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.vsplit-card-description {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.vsplit-card-content {
+  @apply px-6 py-4;
+}
+
+.vsplit-card-footer {
+  @apply px-6 py-4 bg-gray-50 border-t border-gray-200;
+}
+
+/* Responsive Styles */
+
+@media (max-width: 640px) {
+  .vsplit-container {
+    @apply p-4 mx-4;
+  }
+
+  .vsplit-split-step {
+    @apply p-4;
+  }
+
+  .vsplit-step-header {
+    @apply flex-col items-start space-y-2;
+  }
+
+  .vsplit-progress-bar {
+    @apply flex-col space-y-2 space-x-0;
+  }
+
+  .vsplit-progress-step {
+    @apply h-1 w-full;
+  }
+}
+
+/* Animation Styles */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vsplit-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.vsplit-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Dark Mode Support */
+
+@media (prefers-color-scheme: dark) {
+  .vsplit-container {
+    @apply bg-gray-800 text-white;
+  }
+
+  .vsplit-card {
+    @apply bg-gray-800;
+  }
+
+  .vsplit-card-header,
+  .vsplit-card-footer {
+    @apply bg-gray-700 border-gray-600;
+  }
+
+  .vsplit-split-step {
+    @apply border-gray-600;
+  }
+
+  .vsplit-split-step.active {
+    @apply border-blue-400 bg-blue-900;
+  }
+
+  .vsplit-split-step.completed {
+    @apply border-green-400 bg-green-900;
+  }
+
+  .vsplit-payment-element {
+    @apply border-gray-600 bg-gray-700;
+  }
+
+  .vsplit-step-title {
+    @apply text-gray-100;
+  }
+}
