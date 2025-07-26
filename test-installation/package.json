@@ -16,7 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@vegaci_shared/vsplit-payment-gateway": "^1.0.0",
+    "@vegaci_shared/vsplit-payment-gateway": "^1.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
