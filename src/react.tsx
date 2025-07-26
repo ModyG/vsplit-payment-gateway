@@ -453,7 +453,19 @@ export function SplitPayment({
   useEffect(() => {
     const initialize = async () => {
       try {
-        await initializeSplitPayment({ splits });
+        const totalAmount = splits.reduce(
+          (sum, split) => sum + split.amount,
+          0
+        );
+        const config: SplitPaymentConfig = {
+          totalAmount,
+          numberOfCards: splits.length,
+          cardAmounts: splits.map((split) => split.amount),
+          currency: 'usd',
+          orderId: `split_${Date.now()}`,
+          timeout: 600,
+        };
+        await initializeSplitPayment(config);
         setInitialized(true);
       } catch (err) {
         const errorMessage =

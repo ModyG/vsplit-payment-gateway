@@ -119,21 +119,41 @@ export default function HomePage() {
             Live Demo Scenarios
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Basic Payment */}
+            {/* Comprehensive Demo - NEW */}
             <Link
-              href="/demo/basic"
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              href="/demo/comprehensive"
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-2 border-blue-500"
             >
               <div className="bg-blue-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
                 <CreditCard className="h-6 w-6" />
               </div>
               <h4 className="text-xl font-semibold mb-2">
-                Basic Split Payment
+                Complete VSplit Demo
               </h4>
               <p className="text-gray-600 mb-4">
-                Simple 2-way split between merchant and platform fee.
+                Customer payment splitting + merchant revenue sharing in one
+                demo.
               </p>
               <div className="text-sm text-blue-600 font-medium">
+                ⭐ Try New Demo →
+              </div>
+            </Link>
+
+            {/* Customer Split Payment */}
+            <Link
+              href="/demo/basic"
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="bg-green-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                <Users className="h-6 w-6" />
+              </div>
+              <h4 className="text-xl font-semibold mb-2">
+                Customer Split Payment
+              </h4>
+              <p className="text-gray-600 mb-4">
+                Let customers split their payment across multiple cards.
+              </p>
+              <div className="text-sm text-green-600 font-medium">
                 Try Demo →
               </div>
             </Link>
@@ -143,8 +163,8 @@ export default function HomePage() {
               href="/demo/restaurant"
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="bg-green-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
-                <Users className="h-6 w-6" />
+              <div className="bg-orange-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6" />
               </div>
               <h4 className="text-xl font-semibold mb-2">
                 Restaurant Delivery
@@ -152,7 +172,7 @@ export default function HomePage() {
               <p className="text-gray-600 mb-4">
                 Split between restaurant, delivery driver, and platform.
               </p>
-              <div className="text-sm text-green-600 font-medium">
+              <div className="text-sm text-orange-600 font-medium">
                 Try Demo →
               </div>
             </Link>
@@ -179,14 +199,14 @@ export default function HomePage() {
               href="/demo/freelance"
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="bg-orange-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
-                <Zap className="h-6 w-6" />
+              <div className="bg-indigo-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6" />
               </div>
               <h4 className="text-xl font-semibold mb-2">Freelance Platform</h4>
               <p className="text-gray-600 mb-4">
                 Escrow payments with milestone releases.
               </p>
-              <div className="text-sm text-orange-600 font-medium">
+              <div className="text-sm text-indigo-600 font-medium">
                 Coming Soon
               </div>
             </Link>
@@ -197,7 +217,7 @@ export default function HomePage() {
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
               <div className="bg-pink-500 text-white p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6" />
+                <CreditCard className="h-6 w-6" />
               </div>
               <h4 className="text-xl font-semibold mb-2">Event Tickets</h4>
               <p className="text-gray-600 mb-4">

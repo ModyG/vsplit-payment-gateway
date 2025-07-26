@@ -5,9 +5,10 @@ A comprehensive B2B payment gateway integration package for Stripe with advanced
 ## Features
 
 - 🎯 **Simple Integration**: Minimal setup with just configuration
-- 💳 **Full Payments**: Single card payment processing
-- 🔄 **Split Payments**: Divide payments across multiple cards
-- ⏱️ **Timeout Management**: Automatic cancellation and refunds for incomplete split payments
+- 💳 **Single Card Payments**: Traditional one-card payment processing
+- 🔄 **Customer Split Payments**: Let customers split their payment across multiple cards
+- ⏱️ **Timeout Management**: Automatic cancellation and refunds for incomplete payments
+- 💰 **Optional Merchant Splits**: Revenue sharing between merchant, platform, drivers, etc.
 - 🔒 **Secure**: Follows Stripe security best practices
 - 📱 **React Ready**: Built-in React hooks and components
 - 🎨 **Customizable**: Theming and styling options
@@ -19,7 +20,7 @@ A comprehensive B2B payment gateway integration package for Stripe with advanced
 
 Experience VSplit in action with our interactive demo application:
 
-**[→ Try Live Demo](https://your-vsplit-demo.vercel.app)** _(Deploy the demo to get this URL)_
+**[→ Try Live Demo](https://vsplit-payment-gateway.vercel.app)**
 
 ### Local Demo Setup
 
@@ -37,10 +38,10 @@ Experience VSplit in action with our interactive demo application:
 
 ### Demo Scenarios
 
-- **Basic Split Payment** - Simple 2-way split between merchant and platform
-- **Restaurant Delivery** - 3-way split: Restaurant, Driver, Platform
-- **Marketplace** - Multi-vendor marketplace with different commission rates
-- **More coming soon** - Freelance, Events, Custom integrations
+- **Customer Split Payment** - Customer chooses to split total across multiple cards
+- **Single Card Payment** - Traditional one-card payment processing
+- **Merchant Revenue Sharing** - Optional splits for merchant/platform/drivers
+- **Timeout & Auto-Refund** - Automatic refunds if split payments incomplete
 
 ## Installation
 
@@ -136,51 +137,147 @@ function PaymentPage() {
 }
 ```
 
-### 3. Split Payments
+### 3. Customer Split Payments
+
+Customer wants to pay $100 but split across 3 cards:
 
 ```typescript
-// Initialize split payment
+// Customer chooses to split payment
 const splitSession = await gateway.initializeSplitPayment({
-  splits: [
-    { amount: 2000, label: 'First Card' }, // $20.00
-    { amount: 3000, label: 'Second Card' }, // $30.00
-  ],
-  timeout: 300, // 5 minutes
+  totalAmount: 10000, // $100.00
+  numberOfCards: 3,
+  cardAmounts: [4000, 3500, 2500], // $40 + $35 + $25 = $100
+  currency: 'usd',
+  orderId: 'order_123',
+  customer: {
+    email: 'customer@example.com',
+    name: 'John Doe',
+  },
+  timeout: 600, // 10 minutes to complete all payments
 });
 
-// Process each split
-for (let i = 0; i < splitSession.paymentIntents.length; i++) {
+// Process each card payment
+for (let i = 0; i < splitSession.cardPayments.length; i++) {
   const result = await gateway.processSplitPayment(
     splitSession.sessionId,
     i,
-    paymentMethod
+    paymentMethod // Customer's card data for this split
   );
-  console.log(`Split ${i + 1} result:`, result);
+
+  if (!result.success) {
+    console.log(`Card ${i + 1} failed:`, result.error);
+    // Customer can retry or all payments will be refunded after timeout
+  }
 }
 ```
 
-### 4. React Split Payment Component
+### 4. Merchant Revenue Splitting (Optional)
+
+After customer pays, split revenue between recipients:
+
+````typescript
+// Initialize payment with automatic merchant splits
+const paymentResult = await gateway.initializePaymentWithMerchantSplits({
+  amount: 10000, // $100.00 customer payment
+  currency: 'usd',
+  orderId: 'order_123',
+  customer: {
+    email: 'customer@example.com',
+    name: 'John Doe',
+  },
+  // Optional: Automatically split revenue after successful payment
+  merchantSplits: [
+    { amount: 8500, label: 'Merchant Revenue', recipient: 'merchant_123' }, // $85
+    { amount: 1000, label: 'Platform Fee', recipient: 'platform_123' }, // $10
+    { amount: 500, label: 'Processing Fee', recipient: 'processor_123' }, // $5
+  ],
+});
+
+// Process customer's payment first
+const result = await gateway.processPayment(paymentResult.paymentId, paymentMethod);
+
+// If customer payment succeeds, merchant splits are processed automatically
+if (result.success) {
+  console.log('Customer paid $100, revenue split between 3 recipients');
+}
+
+### 5. React Customer Split Payment Component
 
 ```tsx
-import { SplitPayment } from '@vsplit/payment-gateway/react';
+import { CustomerSplitPayment } from '@vsplit/payment-gateway/react';
 
-function SplitPaymentPage() {
-  const splits = [
-    { amount: 2000, label: 'Card 1' },
-    { amount: 3000, label: 'Card 2' },
+function CustomerSplitPaymentPage() {
+  const [paymentAmount, setPaymentAmount] = useState(10000); // $100
+  const [numberOfCards, setNumberOfCards] = useState(2);
+
+  const handleSplitAmountChange = (cardIndex: number, amount: number) => {
+    // Update split amounts ensuring they sum to total
+  };
+
+  return (
+    <div>
+      <h2>Split Your Payment</h2>
+      <p>Total: ${(paymentAmount / 100).toFixed(2)}</p>
+
+      <label>
+        How many cards would you like to use?
+        <select value={numberOfCards} onChange={(e) => setNumberOfCards(+e.target.value)}>
+          <option value={1}>1 Card (Full Payment)</option>
+          <option value={2}>2 Cards</option>
+          <option value={3}>3 Cards</option>
+          <option value={4}>4 Cards</option>
+        </select>
+      </label>
+
+      {numberOfCards > 1 ? (
+        <CustomerSplitPayment
+          totalAmount={paymentAmount}
+          numberOfCards={numberOfCards}
+          onStepComplete={(stepIndex, result) => {
+            console.log(`Card ${stepIndex + 1} payment completed:`, result);
+          }}
+          onAllComplete={(session) => {
+            console.log('All card payments completed:', session);
+          }}
+          onTimeout={(session) => {
+            console.log('Payment timeout - refunding all successful payments');
+          }}
+          onError={(error) => {
+            console.error('Split payment error:', error);
+          }}
+        />
+      ) : (
+        <SinglePayment amount={paymentAmount} />
+      )}
+    </div>
+  );
+}
+````
+
+### 6. React Merchant Split Component (Optional)
+
+```tsx
+import { MerchantSplitPayment } from '@vsplit/payment-gateway/react';
+
+function MerchantSplitPaymentPage() {
+  const merchantSplits = [
+    { amount: 8500, label: 'Your Revenue', recipient: 'merchant_123' },
+    { amount: 1000, label: 'Platform Fee', recipient: 'platform_123' },
+    { amount: 500, label: 'Payment Processing', recipient: 'stripe_123' },
   ];
 
   return (
-    <SplitPayment
-      splits={splits}
-      onStepComplete={(stepIndex, result) => {
-        console.log(`Step ${stepIndex + 1} completed:`, result);
+    <MerchantSplitPayment
+      amount={10000} // $100 total customer payment
+      merchantSplits={merchantSplits}
+      onPaymentComplete={(result) => {
+        console.log('Customer payment completed:', result);
       }}
-      onAllComplete={(session) => {
-        console.log('All payments completed:', session);
+      onSplitsComplete={(splits) => {
+        console.log('Revenue splits completed:', splits);
       }}
       onError={(error) => {
-        console.error('Split payment error:', error);
+        console.error('Payment or split error:', error);
       }}
     />
   );

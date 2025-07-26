@@ -12,6 +12,7 @@ import {
   RefundResponse,
   PaymentVerificationRequest,
   PaymentVerificationResponse,
+  EnhancedPaymentSessionConfig,
 } from './types';
 import { ApiClient } from './utils/api-client';
 import { EventEmitter } from './utils/event-emitter';
@@ -441,6 +442,88 @@ export class VSplitPaymentGateway {
    */
   public getCurrentSession(): PaymentIntent | SplitPaymentSession | null {
     return this.currentSession;
+  }
+
+  // ========================================
+  // MERCHANT REVENUE SPLITTING (OPTIONAL)
+  // ========================================
+
+  /**
+   * Initialize payment with merchant revenue splitting
+   * This processes customer payment and then splits revenue between recipients
+   */
+  public async initializePaymentWithMerchantSplits(
+    config: PaymentSessionConfig & {
+      merchantSplits?: Array<{
+        amount: number;
+        label: string;
+        recipient: string;
+        percentage?: number;
+      }>;
+    }
+  ): Promise<PaymentResult> {
+    try {
+      // First, initialize the regular payment
+      const paymentResult = await this.initializePayment(config);
+
+      if (!paymentResult.success) {
+        return paymentResult;
+      }
+
+      // If merchant splits are provided, process them after successful payment
+      if (config.merchantSplits && config.merchantSplits.length > 0) {
+        // Store the merchant splits for processing after payment confirmation
+        (paymentResult.data as any).merchantSplits = config.merchantSplits;
+      }
+
+      return paymentResult;
+    } catch (error) {
+      const result = {
+        success: false,
+        paymentId: '',
+        status: 'failed' as PaymentStatus,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+      this.eventEmitter.emit('payment:failed', result);
+      return result;
+    }
+  }
+
+  /**
+   * Process merchant revenue splits after successful payment
+   */
+  public async processMerchantSplits(
+    paymentIntentId: string,
+    splits: Array<{
+      amount: number;
+      label: string;
+      recipient: string;
+    }>
+  ): Promise<{ success: boolean; splits: any[]; error?: string }> {
+    try {
+      const response = await this.apiClient.post(
+        '/payment/merchant-splits/process',
+        {
+          paymentIntentId,
+          splits,
+        }
+      );
+
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to process merchant splits');
+      }
+
+      return {
+        success: true,
+        splits: response.data.splits || [],
+      };
+    } catch (error) {
+      return {
+        success: false,
+        splits: [],
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
   }
 
   /**

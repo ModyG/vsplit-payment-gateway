@@ -58,6 +58,7 @@
     "url": "https://github.com/ModyG/vsplit-payment-gateway/issues"
   },
   "homepage": "https://github.com/ModyG/vsplit-payment-gateway#readme",
+  "demo": "https://vsplit-payment-gateway.vercel.app",
   "dependencies": {
     "@stripe/stripe-js": "^4.0.0",
     "stripe": "^15.0.0"

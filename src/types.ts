@@ -94,22 +94,40 @@ export interface Address {
  * Split payment configuration
  */
 export interface SplitPaymentConfig {
-  /** Array of amounts for each payment method */
-  splits: PaymentSplit[];
-  /** Timeout in seconds */
+  /** Total amount to split across multiple customer cards */
+  totalAmount: number;
+  /** Number of cards customer wants to use */
+  numberOfCards: number;
+  /** Individual card amounts (must sum to totalAmount) */
+  cardAmounts: number[];
+  /** Currency code (ISO 4217) */
+  currency: string;
+  /** Unique order/transaction ID */
+  orderId: string;
+  /** Customer information */
+  customer?: CustomerInfo;
+  /** Timeout in seconds for completing all payments */
   timeout?: number;
+  /** Metadata to attach to the payments */
+  metadata?: Record<string, string>;
 }
 
 /**
- * Individual payment split
+ * Individual payment split (for customer card splitting)
  */
 export interface PaymentSplit {
-  /** Amount for this split (in smallest currency unit) */
+  /** Amount for this card (in smallest currency unit) */
   amount: number;
-  /** Optional label for this split */
-  label?: string;
-  /** Optional payment method preferences */
-  paymentMethods?: string[];
+  /** Card index/identifier */
+  cardIndex: number;
+  /** Payment status for this card */
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  /** Stripe payment intent ID for this card */
+  paymentIntentId?: string;
+  /** Client secret for this card payment */
+  clientSecret?: string;
+  /** Error message if payment failed */
+  error?: string;
 }
 
 /**
@@ -128,7 +146,10 @@ export type PaymentStatus =
   | 'failed'
   | 'canceled'
   | 'partial'
-  | 'refunded';
+  | 'refunded'
+  | 'completed'
+  | 'timeout'
+  | 'refunding';
 
 /**
  * Payment intent response
@@ -151,25 +172,48 @@ export interface PaymentIntent {
 }
 
 /**
- * Split payment session
+ * Split payment session (for customer multi-card payments)
  */
 export interface SplitPaymentSession {
   /** Session ID */
   sessionId: string;
-  /** Array of payment intents for each split */
-  paymentIntents: PaymentIntent[];
-  /** Overall session status */
-  status: PaymentStatus;
-  /** Total amount */
+  /** Total amount to be paid */
   totalAmount: number;
   /** Currency */
   currency: string;
-  /** Timeout timestamp */
-  expiresAt: number;
-  /** Completed payments count */
+  /** Order ID */
+  orderId: string;
+  /** Array of individual card payments */
+  cardPayments: PaymentSplit[];
+  /** Array of payment intents for each card */
+  paymentIntents: PaymentIntent[];
+  /** Overall session status */
+  status:
+    | 'pending'
+    | 'processing'
+    | 'completed'
+    | 'failed'
+    | 'timeout'
+    | 'refunding'
+    | 'succeeded'
+    | 'partial'
+    | 'canceled';
+  /** Number of completed payments */
   completedPayments: number;
-  /** Failed payments count */
+  /** Number of failed payments */
   failedPayments: number;
+  /** Session creation timestamp */
+  createdAt: number;
+  /** Session expiration timestamp */
+  expiresAt: number;
+  /** Whether session has timed out */
+  isTimedOut: boolean;
+  /** Refund status if timeout occurred */
+  refundStatus?: 'pending' | 'completed' | 'failed';
+  /** Customer information */
+  customer?: CustomerInfo;
+  /** Metadata */
+  metadata?: Record<string, string>;
 }
 
 /**
@@ -367,4 +411,33 @@ export interface PaymentVerificationResponse {
   currency: string;
   /** Additional details */
   details?: Record<string, any>;
+}
+
+// ========================================
+// MERCHANT REVENUE SPLITTING (OPTIONAL)
+// ========================================
+
+/**
+ * Merchant revenue split configuration (optional feature)
+ * This splits the received payment between merchant, platform, etc.
+ */
+export interface MerchantRevenueSplit {
+  /** Amount to split to this recipient (in smallest currency unit) */
+  amount: number;
+  /** Label for this split */
+  label: string;
+  /** Recipient account/ID */
+  recipient: string;
+  /** Commission percentage (alternative to amount) */
+  percentage?: number;
+}
+
+/**
+ * Enhanced payment session config with optional merchant splitting
+ */
+export interface EnhancedPaymentSessionConfig extends PaymentSessionConfig {
+  /** Optional merchant revenue splits */
+  merchantSplits?: MerchantRevenueSplit[];
+  /** Enable automatic merchant splitting */
+  enableMerchantSplitting?: boolean;
 }
