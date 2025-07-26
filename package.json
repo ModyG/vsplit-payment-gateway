@@ -29,7 +29,14 @@
     "test": "jest",
     "lint": "eslint src/*.ts src/utils/*.ts",
     "lint:fix": "eslint src/*.ts src/utils/*.ts --fix",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "release:patch": "npm run release -- patch",
+    "release:minor": "npm run release -- minor",
+    "release:major": "npm run release -- major",
+    "release": "npm run pre-release && npm version $1 && npm run post-release",
+    "pre-release": "npm run lint && npm run test && npm run build",
+    "post-release": "git push && git push --tags && npm publish",
+    "verify-release": "cd test-installation && npm install @vegaci_shared/vsplit-payment-gateway@latest && npm run test"
   },
   "keywords": [
     "stripe",
