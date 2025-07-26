@@ -1,6 +1,6 @@
 {
   "name": "@vegaci_shared/vsplit-payment-gateway",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A B2B payment gateway integration package for Stripe with split payment capabilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
