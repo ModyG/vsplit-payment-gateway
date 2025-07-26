@@ -150,13 +150,13 @@ export function useVSplit(options: UseVSplitOptions = {}): UseVSplitReturn {
         const result = await gateway.initializePayment(config);
 
         if (result.success && result.data) {
-          setCurrentSession(result.data);
+          setCurrentSession(result.data as PaymentIntent | SplitPaymentSession);
           setStatus(result.status);
 
           // Create elements if client secret is available
-          if (result.data.clientSecret && stripe) {
+          if ((result.data as PaymentIntent).clientSecret && stripe) {
             const elementsInstance = gateway.createElements(
-              result.data.clientSecret
+              (result.data as PaymentIntent).clientSecret
             );
             setElements(elementsInstance);
           }
@@ -193,7 +193,7 @@ export function useVSplit(options: UseVSplitOptions = {}): UseVSplitReturn {
 
       try {
         const result = await gateway.processPayment(
-          currentSession.id,
+          (currentSession as PaymentIntent).id,
           paymentMethod
         );
         setStatus(result.status);
@@ -205,7 +205,7 @@ export function useVSplit(options: UseVSplitOptions = {}): UseVSplitReturn {
         setStatus('failed');
         return {
           success: false,
-          paymentId: currentSession.id,
+          paymentId: (currentSession as PaymentIntent).id,
           status: 'failed',
           error: errorMessage,
         };
@@ -257,7 +257,7 @@ export function useVSplit(options: UseVSplitOptions = {}): UseVSplitReturn {
 
       try {
         const result = await gateway.processSplitPayment(
-          currentSession.sessionId,
+          (currentSession as SplitPaymentSession).sessionId,
           splitIndex,
           paymentMethod
         );
@@ -277,7 +277,7 @@ export function useVSplit(options: UseVSplitOptions = {}): UseVSplitReturn {
         setError(errorMessage);
         return {
           success: false,
-          paymentId: currentSession.sessionId,
+          paymentId: (currentSession as SplitPaymentSession).sessionId,
           status: 'failed',
           error: errorMessage,
         };
@@ -361,7 +361,10 @@ export function PaymentForm({
         throw new Error(submitError.message);
       }
 
-      const result = await processPayment({ elements });
+      const result = await processPayment({
+        id: 'payment-method',
+        type: 'card',
+      });
 
       if (result.success) {
         onSuccess?.(result);

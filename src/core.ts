@@ -326,10 +326,11 @@ export class VSplitPaymentGateway {
 
       if ('sessionId' in this.currentSession) {
         // Split payment session
+        const splitSession = this.currentSession as SplitPaymentSession;
         await this.apiClient.post(
-          `/payment/split/${this.currentSession.sessionId}/cancel`
+          `/payment/split/${splitSession.sessionId}/cancel`
         );
-        await this.refundPartialPayments(this.currentSession);
+        await this.refundPartialPayments(splitSession);
       } else {
         // Single payment
         await this.apiClient.post(`/payment/${this.currentSession.id}/cancel`);
@@ -337,10 +338,9 @@ export class VSplitPaymentGateway {
 
       const result = {
         success: true,
-        paymentId:
-          'sessionId' in this.currentSession
-            ? this.currentSession.sessionId
-            : this.currentSession.id,
+        paymentId: ('sessionId' in this.currentSession
+          ? (this.currentSession as SplitPaymentSession).sessionId
+          : (this.currentSession as PaymentIntent).id) as string,
         status: 'canceled' as PaymentStatus,
       };
 

@@ -154,7 +154,7 @@ export type PaymentStatus =
 /**
  * Payment intent response
  */
-export interface PaymentIntent extends Record<string, unknown> {
+export interface PaymentIntent {
   /** Payment intent ID */
   id: string;
   /** Client secret for frontend */
@@ -169,6 +169,8 @@ export interface PaymentIntent extends Record<string, unknown> {
   created: number;
   /** Metadata */
   metadata?: Record<string, string>;
+  /** Index signature for compatibility */
+  [key: string]: unknown;
 }
 
 /**
@@ -214,6 +216,8 @@ export interface SplitPaymentSession {
   customer?: CustomerInfo;
   /** Metadata */
   metadata?: Record<string, string>;
+  /** Index signature for compatibility */
+  [key: string]: unknown;
 }
 
 /**
@@ -229,7 +233,7 @@ export interface PaymentResult {
   /** Error message if failed */
   error?: string;
   /** Additional data */
-  data?: PaymentIntent | Record<string, unknown>;
+  data?: any;
 }
 
 /**
