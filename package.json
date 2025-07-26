@@ -33,7 +33,7 @@
     "release:patch": "npm run pre-release && npm version patch && npm run post-release",
     "release:minor": "npm run pre-release && npm version minor && npm run post-release",
     "release:major": "npm run pre-release && npm version major && npm run post-release",
-    "pre-release": "npm run lint",
+    "pre-release": "npm run lint && npm run test",
     "post-release": "git push && git push --tags && npm publish",
     "verify-release": "cd test-installation && npm install @vegaci_shared/vsplit-payment-gateway@latest && npm run test",
     "demo": "cd demo/vsplit-demo && npm run dev",
